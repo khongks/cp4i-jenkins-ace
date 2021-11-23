@@ -1,28 +1,29 @@
 // Image variables
-def buildBarImage = "image-registry.openshift-image-registry.svc:5000/jenkins/ace-docker:latest"
+// def buildBarImage = "image-registry.openshift-image-registry.svc:5000/jenkins/ace-full:12.0.2.0-ubuntu"
+def buildBarImage = "image-registry.openshift-image-registry.svc:5000/jenkins/ace-full"
 def ocImage = "quay.io/openshift/origin-cli"
 // K8S secret Names
-def secretName = "jenkins-ssh-ns-gitibm"
+// def secretName = "jenkins-ssh-ns-gitibm"
 // Params for Git Checkout-Stage
-def gitRepo = "git@github.ibm.com:cpat/cp4i-jenkins-ace.git"
-def gitDomain = "github.ibm.com"
+def gitRepo = "https://github.com/khongks/cp4i-jenkins-ace.git"
+def gitDomain = "github.com"
 // Params for Build Bar Stage
 def barName = "file"
 def appName = "file"
 def projectDir = "cp4i-jenkins-ace"
 // Params for Deploy Bar Stage
 def serverName = "foobar"
-def namespace = "cp4i"
+def namespace = "ace"
 def configuration_list = ""
-def host = "ace-db-production-dash.cp4i.svc.cluster.local"
+def host = "ace-dashboard-dash.ace.svc.cluster.local"
 def port = "3443"
-def ibmAceSecretName = "ace-db-production-dash"
-def imageName = "cp.icr.io/cp/appc/ace-server-prod"
+def ibmAceSecretName = "ace-dashboard-dash"
+def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163af38465e6123e3902c118d8e24e798b7b01"
 def imagePullSecret = "ibm-entitlement-key"
 
 podTemplate(
     serviceAccount: "cluster-admin",
-    volumes: [ secretVolume(secretName: "${secretName}", mountPath: '/etc/ssh-key') ],
+    // volumes: [ secretVolume(secretName: "${secretName}", mountPath: '/etc/ssh-key') ],
     containers: [
         containerTemplate(name: 'buildbar', image: "${buildBarImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
             envVar(key: 'BAR_NAME', value: "${barName}"),
@@ -46,7 +47,7 @@ podTemplate(
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
             secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
         ]),
-        containerTemplate(name: 'jnlp', image: "jenkins/jnlp-slave:4.0.1-1", ttyEnabled: true, workingDir: "/home/jenkins", envVars: [
+        containerTemplate(name: 'jnlp', image: "jenkins/jnlp-slave:latest", ttyEnabled: true, workingDir: "/home/jenkins", envVars: [
             envVar(key: 'HOME', value: '/home/jenkins'),
             envVar(key: 'GIT_REPO', value: "${gitRepo}"),
             envVar(key: 'GIT_DOMAIN', value: "${gitDomain}"),
@@ -57,10 +58,10 @@ podTemplate(
             container("jnlp") {
                 stage('copy ssh key to home directory') {
                     sh """
-                        eval \$(ssh-agent -s )
-                        mkdir ~/.ssh
-                        ssh-add /etc/ssh-key/ssh-privatekey
-                        ssh-keyscan -H $GIT_DOMAIN >> ~/.ssh/known_hosts
+                        # eval \$(ssh-agent -s )
+                        # mkdir ~/.ssh
+                        # ssh-add /etc/ssh-key/ssh-privatekey
+                        # ssh-keyscan -H $GIT_DOMAIN >> ~/.ssh/known_hosts
                         git clone $GIT_REPO
                         ls -la
                     """

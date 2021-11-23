@@ -3,7 +3,8 @@ MAINTAINER Trevor Dolby <tdolby@uk.ibm.com> (@tdolby)
 
 # docker build -t ace-full:12.0.2.0-ubuntu -f Dockerfile.ubuntu .
 
-ARG DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/12.0.2.0-ACE-LINUX64-DEVELOPER.tar.gz
+# ARG DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/12.0.2.0-ACE-LINUX64-DEVELOPER.tar.gz
+ARG DOWNLOAD_URL=http://host.docker.internal:7800/12.0.2.0-ACE-LINUX64-DEVELOPER.tar.gz
 ARG PRODUCT_LABEL=ace-12.0.2.0
 
 # Prevent errors about having no terminal when using apt-get
