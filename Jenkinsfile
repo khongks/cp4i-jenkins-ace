@@ -23,6 +23,7 @@ def imagePullSecret = "ibm-entitlement-key"
 
 podTemplate(
     serviceAccount: "jenkins-jenkins-kks",
+    namespace: "ace",
     // volumes: [ secretVolume(secretName: "${secretName}", mountPath: '/etc/ssh-key') ],
     containers: [
         containerTemplate(name: 'buildbar', image: "${buildBarImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
@@ -45,7 +46,7 @@ podTemplate(
             envVar(key: 'HOST', value: "${host}"),
             envVar(key: 'PORT', value: "${port}"),
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
-            secretEnvVar(key: 'API_KEY', namespace: "ace", secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
+            secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
         ]),
         containerTemplate(name: 'jnlp', image: "jenkins/jnlp-slave:latest", ttyEnabled: true, workingDir: "/home/jenkins", envVars: [
             envVar(key: 'HOME', value: '/home/jenkins'),
