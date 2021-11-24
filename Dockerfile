@@ -24,7 +24,7 @@ RUN echo "ACE_12:" > /etc/debian_chroot \
   && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /root/.bashrc
 
 # mqsicreatebar prereqs; need to run "Xvfb -ac :99 &" and "export DISPLAY=:99"
-RUN apt-get -y install libgtk-3-0 libxtst6 libswt-gtk-4-java libswt-gtk-4-jni xvfb && \
+RUN apt-get -y install libgtk-3-0 libxtst6 libswt-gtk-4-java libswt-gtk-4-jni webkit2gtk-driver xvfb && \
   mkdir -p ~/.swt/lib/linux/x86_64 && \
   ln -s /usr/lib/jni/libswt-* ~/.swt/lib/linux/x86_64 && \
   ls -la /root/.swt/lib/linux/x86_64/
