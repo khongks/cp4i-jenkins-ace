@@ -22,7 +22,7 @@ def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163
 def imagePullSecret = "ibm-entitlement-key"
 
 podTemplate(
-    serviceAccount: "jenkins-jenkins-kks",
+    serviceAccount: "jenkins-ace",
     namespace: "ace",
     // volumes: [ secretVolume(secretName: "${secretName}", mountPath: '/etc/ssh-key') ],
     containers: [
