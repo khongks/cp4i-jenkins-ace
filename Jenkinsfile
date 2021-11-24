@@ -73,8 +73,8 @@ podTemplate(
             container("buildbar") {
                 stage('get pods from cluster') {
                     sh label: '', script: '''#!/bin/bash
-                        # Xvfb -ac :100 &
-                        # export DISPLAY=:100
+                        Xvfb -ac :100 &
+                        export DISPLAY=:100
                         export LICENSE=accept
                         pwd
                         source /opt/ibm/ace-12/server/bin/mqsiprofile

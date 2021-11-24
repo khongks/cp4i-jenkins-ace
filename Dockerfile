@@ -28,8 +28,6 @@ RUN apt-get -y install libgtk-3-0 libxtst6 libswt-gtk-4-java libswt-gtk-4-jni xv
   mkdir -p ~/.swt/lib/linux/x86_64 && \
   ln -s /usr/lib/jni/libswt-* ~/.swt/lib/linux/x86_64
 
-ls /usr/lib/jni/
-
 # swt-pi4-gtk-4932r18 (Not found in java.library.path)
 # swt-pi4-gtk (Not found in java.library.path)
 # /root/.swt/lib/linux/x86_64/libswt-pi4-gtk-4932r18.so
