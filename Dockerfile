@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 MAINTAINER Trevor Dolby <tdolby@uk.ibm.com> (@tdolby)
 
+# copied from https://github.com/ot4i/ace-docker/tree/master/experimental/ace-full
 # docker build -t ace-full:12.0.2.0-ubuntu -f Dockerfile.ubuntu .
 
 # ARG DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/12.0.2.0-ACE-LINUX64-DEVELOPER.tar.gz
@@ -22,15 +23,27 @@ RUN echo "ACE_12:" > /etc/debian_chroot \
   && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /root/.bashrc
 
 # mqsicreatebar prereqs; need to run "Xvfb -ac :99 &" and "export DISPLAY=:99"
-RUN apt-get -y install libgtk2.0-0 libxtst6 xvfb
+RUN apt-get -y install libgtk2.0-0 libxtst6 libswt-gtk-4-java libswt-gtk-4-jni xvfb && \
+  mkdir -p ~/.swt/lib/linux/x86_64 && \
+  cd ~/.swt/lib/linux/x86_64 && \
+  ls -s /usr/lib/jni && \
+  ln -s /usr/lib/jni/libswt-atk-gtk-4932r18.so && \
+  ln -s /usr/lib/jni/libswt-gtk-4932r18.so && \
+  ln -s /usr/lib/jni/libswt-pi-gtk-4932r18.so
+
+# swt-pi4-gtk-4932r18 (Not found in java.library.path)
+# swt-pi4-gtk (Not found in java.library.path)
+# /root/.swt/lib/linux/x86_64/libswt-pi4-gtk-4932r18.so
 
 # Set BASH_ENV to source mqsiprofile when using docker exec bash -c
 ENV BASH_ENV=/opt/ibm/ace-12/server/bin/mqsiprofile
 
-# Create a user to run as, create the ace workdir, and chmod script files
-RUN useradd --uid 1001 --create-home --home-dir /home/aceuser --shell /bin/bash -G mqbrkrs,sudo aceuser \
-  && su - aceuser -c "export LICENSE=accept && . /opt/ibm/ace-12/server/bin/mqsiprofile && mqsicreateworkdir /home/aceuser/ace-server" \
-  && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /home/aceuser/.bashrc
+# Accept License, source mqsiprofile and create the ace workdir
+RUN su - root -c "export LICENSE=accept && . /opt/ibm/ace-12/server/bin/mqsiprofile && mqsicreateworkdir /root" 
+
+#RUN useradd --uid 1001 --create-home --home-dir /home/aceuser --shell /bin/bash -G mqbrkrs,sudo aceuser \
+#  && su - aceuser -c "export LICENSE=accept && . /opt/ibm/ace-12/server/bin/mqsiprofile && mqsicreateworkdir /home/aceuser/ace-server" \
+#  && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /home/aceuser/.bashrc
 
 # aceuser
 # USER 1001
