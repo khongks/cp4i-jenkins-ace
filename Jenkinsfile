@@ -81,6 +81,7 @@ podTemplate(
                         cd $PROJECT_DIR
                         whoami
                         ls -la /root/.swt/lib/linux/x86_64/
+                        # ls -la /root/.swt/lib/linux/x86_64/
                         mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
                         ls -lha
                         '''
