@@ -21,13 +21,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
 
 # Configure the system
 RUN echo "ACE_12:" > /etc/debian_chroot \
-  && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /root/.bashrc
-
+  && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /root/.bashrc \
 # mqsicreatebar prereqs; need to run "Xvfb -ac :99 &" and "export DISPLAY=:99"
-RUN apt-get -y install libgtk-3-0 libxtst6 libswt-gtk-4-java libswt-gtk-4-jni webkit2gtk-driver xvfb && \
-  mkdir -p ~/.swt/lib/linux/x86_64 && \
-  ln -s /usr/lib/jni/libswt-* ~/.swt/lib/linux/x86_64 && \
-  ls -la /root/.swt/lib/linux/x86_64/
+  && apt-get -y install libgtk-3-0 libxtst6 libswt-gtk-4-java libswt-gtk-4-jni webkit2gtk-driver xvfb
 
 # swt-pi4-gtk-4932r18 (Not found in java.library.path)
 # swt-pi4-gtk (Not found in java.library.path)
@@ -47,7 +43,11 @@ RUN su - root -c "export LICENSE=accept && . /opt/ibm/ace-12/server/bin/mqsiprof
 # USER 1001
 # ENTRYPOINT ["bash"]
 
-USER root
-RUN echo "Xvfb -ac :100 &" >> /root/.bashrc
-RUN echo "export DISPLAY=:100" >> /root/.bashrc
+# USER root
+RUN echo "Xvfb -ac :100 &" >> /root/.bashrc && \
+    echo "export DISPLAY=:100" >> /root/.bashrc \
+    mkdir -p /root/.swt/lib/linux/x86_64 && \
+    ls /usr/lib/jni/libswt-*
+    #ln -s /usr/lib/jni/libswt-* ~/.swt/lib/linux/x86_64 && \
+    #ls -la /root/.swt/lib/linux/x86_64/
 ENTRYPOINT ["bash"]
