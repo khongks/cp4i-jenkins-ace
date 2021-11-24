@@ -22,7 +22,7 @@ def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163
 def imagePullSecret = "ibm-entitlement-key"
 
 podTemplate(
-    serviceAccount: "jenkins-ace",
+    serviceAccount: "jenkins-jenkins-kks",
     namespace: "ace",
     // volumes: [ secretVolume(secretName: "${secretName}", mountPath: '/etc/ssh-key') ],
     containers: [
@@ -46,7 +46,8 @@ podTemplate(
             envVar(key: 'HOST', value: "${host}"),
             envVar(key: 'PORT', value: "${port}"),
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
-            secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
+            // secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
+            envVar(key: 'API_KEY', value: "6556d1d5-3303-4a2f-914d-db589cad6396"),
         ]),
         containerTemplate(name: 'jnlp', image: "jenkins/jnlp-slave:latest", ttyEnabled: true, workingDir: "/home/jenkins", envVars: [
             envVar(key: 'HOME', value: '/home/jenkins'),
