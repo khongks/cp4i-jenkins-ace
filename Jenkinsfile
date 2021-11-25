@@ -77,9 +77,9 @@ podTemplate(
                         # export DISPLAY=:101
                         # export LICENSE=accept
                         pwd
-                        source /opt/ibm/ace-12/server/bin/mqsiprofile
+                        # source /opt/ibm/ace-12/server/bin/mqsiprofile
                         cd $PROJECT_DIR
-                        mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -skipWSErrorCheck -cleanBuild -trace -configuration . 
+                        mqsicreatebar.sh -data . -b $BAR_NAME.bar -a $APP_NAME -skipWSErrorCheck -cleanBuild -trace -configuration . 
                         # mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
                         ls -lha
                         '''
