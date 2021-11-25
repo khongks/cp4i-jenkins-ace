@@ -15,7 +15,7 @@ def projectDir = "cp4i-jenkins-ace"
 def serverName = "foobar"
 def namespace = "ace"
 def configuration_list = ""
-def host = "ace-dashboard-dash.ace.svc.cluster.local"
+def host = "ace-dashboard-dash.ace.cluster.local"
 def port = "3443"
 def ibmAceSecretName = "ace-dashboard-dash"
 def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163af38465e6123e3902c118d8e24e798b7b01"
@@ -76,6 +76,7 @@ podTemplate(
                         Xvfb -ac :101 &
                         export DISPLAY=:101
                         export LICENSE=accept
+                        export SWT_GTK3=0
                         pwd
                         source /opt/ibm/ace-12/server/bin/mqsiprofile
                         cd $PROJECT_DIR
