@@ -68,17 +68,28 @@ podTemplate(
         }
         stage('Build Bar File') {
             container("buildbar") {
-                sh label: '', script: '''#!/bin/bash
+                // sh label: '', script: '''#!/bin/bash
+                //     Xvfb -ac :101 &
+                //     export DISPLAY=:101
+                //     export LICENSE=accept
+                //     pwd
+                //     # source /opt/ibm/ace-12/server/bin/mqsiprofile
+                //     cd $PROJECT_DIR
+                //     mqsicreatebar.sh -data . -b $BAR_NAME.bar -a $APP_NAME -skipWSErrorCheck -cleanBuild -trace -configuration . 
+                //     # mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
+                //     ls -lha
+                // '''
+                sh """
                     Xvfb -ac :101 &
                     export DISPLAY=:101
                     export LICENSE=accept
                     pwd
-                    # source /opt/ibm/ace-12/server/bin/mqsiprofile
+                    source /opt/ibm/ace-12/server/bin/mqsiprofile
                     cd $PROJECT_DIR
                     mqsicreatebar.sh -data . -b $BAR_NAME.bar -a $APP_NAME -skipWSErrorCheck -cleanBuild -trace -configuration . 
                     # mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
                     ls -lha
-                    '''
+                """
             }
         }
         stage('Deploy Bar File') {
@@ -95,7 +106,7 @@ podTemplate(
                     source /dev/stdin <<<"$(echo 'cat <<EOF >final.temp'; cat yaml.temp; echo EOF;)"
                     cat final.temp
                     kubectl config view
-                    '''
+                '''
             }
         }
         stage('Deploy Intergration Server') {
