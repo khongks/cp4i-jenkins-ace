@@ -30,9 +30,6 @@ podTemplate(
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
         ]),
         containerTemplate(name: 'oc-image', image: "${ocImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
-            envVar(key: 'BAR_NAME', value: "${barName}"),
-            envVar(key: 'APP_NAME', value: "${appName}"),
-            envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
         ]),
         containerTemplate(name: 'curl-image', image: "k3integrations/kubectl", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
             envVar(key: 'SERVER_NAME', value: "${serverName}"),
@@ -87,7 +84,6 @@ podTemplate(
                     source /opt/ibm/ace-12/server/bin/mqsiprofile
                     cd cp4i-jenkins-ace
                     mqsicreatebar.sh -data . -b file.bar -a file -skipWSErrorCheck -cleanBuild -trace -configuration . 
-                    # mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
                     ls -lha
                 """
             }
