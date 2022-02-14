@@ -20,14 +20,15 @@ def ibmAceSecretName = "ace-dashboard-dash"
 def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163af38465e6123e3902c118d8e24e798b7b01"
 def imagePullSecret = "ibm-entitlement-key"
 
+            // envVar(key: 'BAR_NAME', value: "${barName}"),
+            // envVar(key: 'APP_NAME', value: "${appName}"),
+            // envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
+
 podTemplate(
     serviceAccount: "jenkins-jenkins-dev",
     // volumes: [ secretVolume(secretName: "${secretName}", mountPath: '/etc/ssh-key') ],
     containers: [
         containerTemplate(name: 'buildbar', image: "${buildBarImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
-            envVar(key: 'BAR_NAME', value: "${barName}"),
-            envVar(key: 'APP_NAME', value: "${appName}"),
-            envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
         ]),
         containerTemplate(name: 'oc-image', image: "${ocImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
         ]),
