@@ -56,64 +56,56 @@ podTemplate(
     node(POD_LABEL) {
         stage('Git Checkout') {
             container("jnlp") {
-                stage('copy ssh key to home directory') {
-                    sh """
-                        # eval \$(ssh-agent -s )
-                        # mkdir ~/.ssh
-                        # ssh-add /etc/ssh-key/ssh-privatekey
-                        # ssh-keyscan -H $GIT_DOMAIN >> ~/.ssh/known_hosts
-                        git clone $GIT_REPO
-                        ls -la
-                    """
-                }
+                sh """
+                    # eval \$(ssh-agent -s )
+                    # mkdir ~/.ssh
+                    # ssh-add /etc/ssh-key/ssh-privatekey
+                    # ssh-keyscan -H $GIT_DOMAIN >> ~/.ssh/known_hosts
+                    git clone $GIT_REPO
+                    ls -la
+                """
             }
         }
         stage('Build Bar File') {
             container("buildbar") {
-                stage('build bar file') {
-                    sh label: '', script: '''#!/bin/bash
-                        Xvfb -ac :101 &
-                        export DISPLAY=:101
-                        export LICENSE=accept
-                        pwd
-                        # source /opt/ibm/ace-12/server/bin/mqsiprofile
-                        cd $PROJECT_DIR
-                        mqsicreatebar.sh -data . -b $BAR_NAME.bar -a $APP_NAME -skipWSErrorCheck -cleanBuild -trace -configuration . 
-                        # mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
-                        ls -lha
-                        '''
-                }
+                sh label: '', script: '''#!/bin/bash
+                    Xvfb -ac :101 &
+                    export DISPLAY=:101
+                    export LICENSE=accept
+                    pwd
+                    # source /opt/ibm/ace-12/server/bin/mqsiprofile
+                    cd $PROJECT_DIR
+                    mqsicreatebar.sh -data . -b $BAR_NAME.bar -a $APP_NAME -skipWSErrorCheck -cleanBuild -trace -configuration . 
+                    # mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
+                    ls -lha
+                    '''
             }
         }
         stage('Deploy Bar File') {
             container("curl-image") {
-                stage('upload bar file to cluster') {
-                    sh label: '', script: '''#!/bin/bash
-                        set -e
-                        cd $PROJECT_DIR
-                        ls -lha
-                        curl -X PUT -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE > /dev/null
-                        export PAYLOAD=`curl -X GET -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE`
-                        export TOKEN=`echo $PAYLOAD | jq -r .token`
-                        curl -k -H "x-ibm-ace-control-apikey: $API_KEY" -T $BAR_FILE.bar https://$HOST:$PORT/v1/directories/$BAR_FILE/bars/$BAR_FILE.bar
-                        wget https://raw.github.ibm.com/cpat/cp4i-generic-asset-us0-gitops/ace-v11.0.0.9/ace/basic/ace-server.yaml?token=AACAQSFUBDBDABJQTLVMP327MUOIG -O yaml.temp
-                        source /dev/stdin <<<"$(echo 'cat <<EOF >final.temp'; cat yaml.temp; echo EOF;)"
-                        cat final.temp
-                        kubectl config view
-                        '''
-                }
+                sh label: '', script: '''#!/bin/bash
+                    set -e
+                    cd $PROJECT_DIR
+                    ls -lha
+                    curl -X PUT -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE > /dev/null
+                    export PAYLOAD=`curl -X GET -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE`
+                    export TOKEN=`echo $PAYLOAD | jq -r .token`
+                    curl -k -H "x-ibm-ace-control-apikey: $API_KEY" -T $BAR_FILE.bar https://$HOST:$PORT/v1/directories/$BAR_FILE/bars/$BAR_FILE.bar
+                    wget https://raw.github.ibm.com/cpat/cp4i-generic-asset-us0-gitops/ace-v11.0.0.9/ace/basic/ace-server.yaml?token=AACAQSFUBDBDABJQTLVMP327MUOIG -O yaml.temp
+                    source /dev/stdin <<<"$(echo 'cat <<EOF >final.temp'; cat yaml.temp; echo EOF;)"
+                    cat final.temp
+                    kubectl config view
+                    '''
             }
         }
         stage('Deploy Intergration Server') {
             container("oc-image") {
-                stage('upload bar file to cluster') {
-                    sh label: '', script: '''#!/bin/bash
-                        set -e
-                        cd $PROJECT_DIR
-                        oc config view
-                        oc apply -f final.temp
-                        '''
-                }
+                sh label: '', script: '''#!/bin/bash
+                    set -e
+                    cd $PROJECT_DIR
+                    oc config view
+                    oc apply -f final.temp
+                    '''
             }
         }
     }
