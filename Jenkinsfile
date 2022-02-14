@@ -70,7 +70,7 @@ podTemplate(
         }
         stage('Build Bar File') {
             container("buildbar") {
-                stage('get pods from cluster') {
+                stage('build bar file') {
                     sh label: '', script: '''#!/bin/bash
                         Xvfb -ac :101 &
                         export DISPLAY=:101
