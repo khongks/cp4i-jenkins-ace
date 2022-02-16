@@ -9,6 +9,7 @@ MAINTAINER Trevor Dolby <tdolby@uk.ibm.com> (@tdolby)
 # oc get secret -n openshift-ingress  router-certs-default -o go-template='{{index .data "tls.crt"}}' | base64 -d | sudo tee /etc/pki/ca-trust/source/anchors/${HOST}.crt  > /dev/null
 # docker login -u $(oc whoami) -p $(oc whoami -t) $HOST
 # docker tag ace-full:12.0.2.0-ubuntu $HOST/jenkins/ace-full:12.0.2.0-ubuntu
+# docker push
 
 # ARG DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/12.0.2.0-ACE-LINUX64-DEVELOPER.tar.gz
 # python -m SimpleHTTPServer 7800
@@ -36,10 +37,17 @@ RUN apt-get -y install libgtk2.0-0 libxtst6 xvfb git curl
 ENV BASH_ENV=/opt/ibm/ace-12/server/bin/mqsiprofile
 
 # Create a user to run as, create the ace workdir, and chmod script files
-RUN useradd --uid 1001 --create-home --home-dir /home/aceuser --shell /bin/bash -G mqbrkrs,sudo aceuser \
-  && su - aceuser -c "export LICENSE=accept && . /opt/ibm/ace-12/server/bin/mqsiprofile && mqsicreateworkdir /home/aceuser/ace-server" \
-  && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /home/aceuser/.bashrc
+# RUN useradd --uid 1001 --create-home --home-dir /home/aceuser --shell /bin/bash -G mqbrkrs,sudo aceuser \
+#   && su - aceuser -c "export LICENSE=accept && . /opt/ibm/ace-12/server/bin/mqsiprofile && mqsicreateworkdir /home/aceuser/ace-server" \
+#   && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /home/aceuser/.bashrc
 
-# aceuser
-USER 1001
+RUN su - root -c "export LICENSE=accept && . /opt/ibm/ace-12/server/bin/mqsiprofile && mqsicreateworkdir /root"
+
+USER root
+RUN echo "Xvfb -ac :100 &" >> /root/.bashrc
+RUN echo "export DISPLAY=:100" >> /root/.bashrc
 ENTRYPOINT ["bash"]
+
+# # aceuser
+# USER 1001
+# ENTRYPOINT ["bash"]
