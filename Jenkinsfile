@@ -1,5 +1,5 @@
 / Image variables
-def buildBarImage = "image-registry.openshift-image-registry.svc:5000/jenkins/ace-full:12.0.2.0-ubuntu"
+def buildBarImage = "image-registry.openshift-image-registry.svc:5000/jenkins/ace-full"
 def ocImage = "quay.io/openshift/origin-cli"
 // K8S secret Names
 // def secretName = "jenkins-ssh-ns-gitibm"
