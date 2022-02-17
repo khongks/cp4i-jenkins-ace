@@ -44,8 +44,8 @@ podTemplate(
             envVar(key: 'HOST', value: "${host}"),
             envVar(key: 'PORT', value: "${port}"),
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
-//            secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
-            envVar(key: 'API_KEY', value: "6556d1d5-3303-4a2f-914d-db589cad6396"),
+            secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
+//            envVar(key: 'API_KEY', value: "6556d1d5-3303-4a2f-914d-db589cad6396"),
         ]),
         containerTemplate(name: 'jnlp', image: "jenkins/jnlp-slave:latest", ttyEnabled: true, workingDir: "/home/jenkins", envVars: [
             envVar(key: 'HOME', value: '/home/jenkins'),
