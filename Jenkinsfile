@@ -58,10 +58,6 @@ podTemplate(
             container("jnlp") {
                 stage('copy ssh key to home directory') {
                     sh """
-                        eval \$(ssh-agent -s )
-                        mkdir ~/.ssh
-                        ssh-add /etc/ssh-key/ssh-privatekey
-                        ssh-keyscan -H $GIT_DOMAIN >> ~/.ssh/known_hosts
                         git clone $GIT_REPO
                         ls -la
                     """
