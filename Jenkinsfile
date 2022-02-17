@@ -57,17 +57,17 @@ podTemplate(
     node(POD_LABEL) {
         stage('Git Checkout') {
             container("jnlp") {
-                stage('copy ssh key to home directory') {
+                // stage('copy ssh key to home directory') {
                     sh """
                         git clone $GIT_REPO
                         ls -la
                     """
-                }
+                // }
             }
         }
         stage('Build Bar File') {
             container("buildbar") {
-                stage('build bar') {
+                // stage('build bar') {
                     sh label: '', script: '''#!/bin/bash
                         Xvfb -ac :100 &
                         export DISPLAY=:100
@@ -78,12 +78,12 @@ podTemplate(
                         mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
                         ls -lha
                         '''
-                }
+                // }
             }
         }
         stage('Deploy Bar File') {
             container("curl-image") {
-                stage('deploy bar') {
+                // stage('deploy bar') {
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
@@ -97,19 +97,19 @@ podTemplate(
                         cat final.temp
                         kubectl config view
                         '''
-                }
+                // }
             }
         }
         stage('Deploy Intergration Server') {
             container("oc-image") {
-                stage('deploy server') {
+                // stage('deploy server') {
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
                         oc config view
                         oc apply -f final.temp
                         '''
-                }
+                // }
             }
         }
     }
