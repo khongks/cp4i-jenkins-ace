@@ -16,7 +16,8 @@ def namespace = "ace"
 def configuration_list = ""
 def host = "ace-dashboard-dash.ace.cluster.local"
 def port = "3443"
-def ibmAceSecretName = "ace/ace-dashboard-dash"
+// oc get secret -n ace ace-dashboard-dash -ojson | jq -r .data.ibmAceControlApiKey | base64 -d
+def ibmAceSecretName = "ace-dashboard-dash"
 def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163af38465e6123e3902c118d8e24e798b7b01"
 def imagePullSecret = "ibm-entitlement-key"
 
@@ -44,8 +45,8 @@ podTemplate(
             envVar(key: 'HOST', value: "${host}"),
             envVar(key: 'PORT', value: "${port}"),
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
-            secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
-//            envVar(key: 'API_KEY', value: "6556d1d5-3303-4a2f-914d-db589cad6396"),
+            //secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
+            envVar(key: 'API_KEY', value: "bb0f7e21-8e8a-40da-9b9f-66371c6c4142"),
         ]),
         containerTemplate(name: 'jnlp', image: "jenkins/jnlp-slave:latest", ttyEnabled: true, workingDir: "/home/jenkins", envVars: [
             envVar(key: 'HOME', value: '/home/jenkins'),
