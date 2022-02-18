@@ -72,11 +72,11 @@ podTemplate(
                         Xvfb -ac :100 &
                         export DISPLAY=:100
                         export LICENSE=accept
-                        // pwd
-                        // source /opt/ibm/ace-11/server/bin/mqsiprofile
-                        // cd $PROJECT_DIR
-                        // mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
-                        // ls -lha
+                        pwd
+                        source /opt/ibm/ace-12/server/bin/mqsiprofile
+                        cd $PROJECT_DIR
+                        mqsicreatebar -data . -b $BAR_NAME.bar -a $APP_NAME -cleanBuild -trace -configuration . 
+                        ls -lha
                         '''
                 }
             }

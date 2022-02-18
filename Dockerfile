@@ -9,7 +9,7 @@ MAINTAINER Trevor Dolby <tdolby@uk.ibm.com> (@tdolby)
 # oc get secret -n openshift-ingress  router-certs-default -o go-template='{{index .data "tls.crt"}}' | base64 -d | sudo tee /etc/pki/ca-trust/source/anchors/${HOST}.crt  > /dev/null
 # docker login -u $(oc whoami) -p $(oc whoami -t) $HOST
 # docker tag ace-full:12.0.2.0-ubuntu $HOST/jenkins/ace-full:12.0.2.0-ubuntu
-# docker push
+# docker push image:tag
 
 # ARG DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/12.0.2.0-ACE-LINUX64-DEVELOPER.tar.gz
 # python -m SimpleHTTPServer 7800
@@ -31,7 +31,7 @@ RUN echo "ACE_12:" > /etc/debian_chroot \
   && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /root/.bashrc
 
 # mqsicreatebar prereqs; need to run "Xvfb -ac :99 &" and "export DISPLAY=:99"
-RUN apt-get -y install libgtk2.0-0 libxtst6 xvfb git curl
+RUN apt-get -y install libgtk2.0-0 libxtst6 xvfb git curl libswt-gtk-4-java
 
 # Set BASH_ENV to source mqsiprofile when using docker exec bash -c
 ENV BASH_ENV=/opt/ibm/ace-12/server/bin/mqsiprofile
