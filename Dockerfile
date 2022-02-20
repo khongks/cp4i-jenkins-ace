@@ -9,7 +9,10 @@ MAINTAINER Trevor Dolby <tdolby@uk.ibm.com> (@tdolby)
 # oc get secret -n openshift-ingress  router-certs-default -o go-template='{{index .data "tls.crt"}}' | base64 -d | sudo tee /etc/pki/ca-trust/source/anchors/${HOST}.crt  > /dev/null
 # docker login -u $(oc whoami) -p $(oc whoami -t) $HOST
 # docker tag ace-full:12.0.2.0-ubuntu $HOST/jenkins/ace-full:12.0.2.0-ubuntu
-# docker push image:tag
+# docker push $HOST/jenkins/ace-full:12.0.2.0-ubuntu
+# docker run -it ace-full:12.0.2.0-ubuntu /bin/bash
+# oc exec -it -n jenkins cp4i-jenkins-ace-43-g896j-ft090-n2327 -c buildbar -- /bin/bash
+# oc adm prune images --registry-url=$HOST --confirm
 
 # ARG DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/integration/12.0.2.0-ACE-LINUX64-DEVELOPER.tar.gz
 # python -m SimpleHTTPServer 7800
@@ -30,8 +33,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
 RUN echo "ACE_12:" > /etc/debian_chroot \
   && echo ". /opt/ibm/ace-12/server/bin/mqsiprofile" >> /root/.bashrc
 
-# mqsicreatebar prereqs; need to run "Xvfb -ac :99 &" and "export DISPLAY=:99"
-RUN apt-get -y install libgtk2.0-0 libxtst6 xvfb git curl libswt-gtk-4-java
+# mqsicreatebar prereqs; need to run "Xvfb -ac :99 &" and "export DISPLAY=:99"  
+RUN apt-get -y install libgtk2.0-0 libxtst6 xvfb git curl libswt-gtk-4-java libswt-gtk-4-jni
 
 # Set BASH_ENV to source mqsiprofile when using docker exec bash -c
 ENV BASH_ENV=/opt/ibm/ace-12/server/bin/mqsiprofile
@@ -48,6 +51,6 @@ RUN echo "Xvfb -ac :100 &" >> /root/.bashrc
 RUN echo "export DISPLAY=:100" >> /root/.bashrc
 ENTRYPOINT ["bash"]
 
-# # aceuser
+# aceuser
 # USER 1001
 # ENTRYPOINT ["bash"]
