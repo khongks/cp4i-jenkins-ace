@@ -14,7 +14,7 @@ def projectDir = "cp4i-jenkins-ace"
 def serverName = "foobar"
 def namespace = "ace"
 def configuration_list = ""
-def host = "ace-dashboard-dash.ace.cluster.local"
+def host = "ace-dashboard-dash.ace.svc.cluster.local"
 def port = "3443"
 // oc get secret -n ace ace-dashboard-dash -ojson | jq -r .data.ibmAceControlApiKey | base64 -d
 def ibmAceSecretName = "ace-dashboard-dash"
