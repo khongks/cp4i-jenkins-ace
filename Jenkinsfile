@@ -1,6 +1,7 @@
 // Image variables
 def buildBarImage = "image-registry.openshift-image-registry.svc:5000/jenkins/ace-buildbar:12.0.2.0-ubuntu"
-def ocImage = "quay.io/openshift/origin-cli"
+// def ocImage = "quay.io/openshift/origin-cli"
+def ocImage = "image-registry.openshift-image-registry.svc:5000/jenkins/oc-deploy:latest"
 // K8S secret Names
 // def secretName = "jenkins-ssh-ns-gitibm"
 // Params for Git Checkout-Stage
@@ -32,27 +33,30 @@ podTemplate(
             envVar(key: 'APP_NAME', value: "${appName}"),
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
         ]),
-        containerTemplate(name: 'oc-image', image: "${ocImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
+        containerTemplate(name: 'oc-build', image: "${ocImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
+            envVar(key: 'NAMESPACE', value: "${namespace}"),
             envVar(key: 'BAR_NAME', value: "${barName}"),
             envVar(key: 'APP_NAME', value: "${appName}"),
-            envVar(key: 'HOST', value: "${host}"),
-            envVar(key: 'PORT', value: "${port}"),
-            envVar(key: 'API_KEY', value: "bb0f7e21-8e8a-40da-9b9f-66371c6c4142"),
-            envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
-        ]),
-        containerTemplate(name: 'curl-image', image: "k3integrations/kubectl", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
-            envVar(key: 'SERVER_NAME', value: "${serverName}"),
-            envVar(key: 'NAMESPACE', value: "${namespace}"),
-            envVar(key: 'BAR_FILE', value: "${barName}"),
             envVar(key: 'CONFIGURATION_LIST', value: "${configuration_list}"),
-            envVar(key: 'IMAGE_NAME', value: "${imageName}"),
-            envVar(key: 'IMAGE_PULLSECRET', value: "${imagePullSecret}"),
             envVar(key: 'HOST', value: "${host}"),
             envVar(key: 'PORT', value: "${port}"),
+            // envVar(key: 'API_KEY', value: "bb0f7e21-8e8a-40da-9b9f-66371c6c4142"),
+            envVar(key: 'API_KEY_NAME', value: "${ibmAceSecretName}"),
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
-            //secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
-            envVar(key: 'API_KEY', value: "bb0f7e21-8e8a-40da-9b9f-66371c6c4142"),
         ]),
+        // containerTemplate(name: 'oc-build', image: "k3integrations/kubectl", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
+        //     envVar(key: 'SERVER_NAME', value: "${serverName}"),
+        //     envVar(key: 'NAMESPACE', value: "${namespace}"),
+        //     envVar(key: 'BAR_FILE', value: "${barName}"),
+        //     envVar(key: 'CONFIGURATION_LIST', value: "${configuration_list}"),
+        //     envVar(key: 'IMAGE_NAME', value: "${imageName}"),
+        //     envVar(key: 'IMAGE_PULLSECRET', value: "${imagePullSecret}"),
+        //     envVar(key: 'HOST', value: "${host}"),
+        //     envVar(key: 'PORT', value: "${port}"),
+        //     envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
+        //     //secretEnvVar(key: 'API_KEY', secretKey: "ibmAceControlApiKey", secretName: "${ibmAceSecretName}"),
+        //     envVar(key: 'API_KEY_NAME', value: "${ibmAceSecretName}"),
+        // ]),
         containerTemplate(name: 'jnlp', image: "jenkins/jnlp-slave:latest", ttyEnabled: true, workingDir: "/home/jenkins", envVars: [
             envVar(key: 'HOME', value: '/home/jenkins'),
             envVar(key: 'GIT_REPO', value: "${gitRepo}"),
@@ -87,12 +91,13 @@ podTemplate(
             }
         }
         stage('Upload Bar File') {
-            container("curl-image") {
+            container("oc-build") {
                 stage('upload bar') {
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
                         ls -lha
+                        API_KEY=`oc get secret $API_KEY_NAME -n $NAMESPACE -ojson | jq -r .data.ibmAceControlApiKey | base64 -d`
                         curl -X PUT -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE > /dev/null
                         // export PAYLOAD=`curl -X GET -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE`
                         // export TOKEN=`echo $PAYLOAD | jq -r .token`}
@@ -107,11 +112,12 @@ podTemplate(
         }
         // https://ace-dashboard-dash:3443/v1/directories/file?1bd395f5-7cb8-4379-921c-536ea29a7af7 
         stage('Deploy Intergration Server') {
-            container("oc-image") {
+            container("oc-build") {
                 stage('deploy server') {
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
+                        API_KEY=`oc get secret $API_KEY_NAME -n $NAMESPACE -ojson | jq -r .data.ibmAceControlApiKey | base64 -d`
                         export TOKEN=`curl -X GET -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE | jq -r .token`
                         sed -e "s/{{NAME}}/$APP_NAME/g" \
                             -e "s/{{HOST}}/$HOST/g" \

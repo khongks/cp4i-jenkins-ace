@@ -2,15 +2,15 @@ FROM ubuntu:20.04
 MAINTAINER Trevor Dolby <tdolby@uk.ibm.com> (@tdolby)
 
 # copied from https://github.com/ot4i/ace-docker/tree/master/experimental/ace-full
-# docker build -t ace-full:12.0.2.0-ubuntu -f Dockerfile.ubuntu
-# docker build --no-cache -t ace-full:12.0.2.0-ubuntu .
+# docker build -t ace-buildbar:12.0.2.0-ubuntu -f Dockerfile.ubuntu
+# docker build --no-cache -t ace-buildbar:12.0.2.0-ubuntu .
 # oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
 # HOST=$(oc get route default-route -n openshift-image-registry --template='{{ .spec.host }}')
 # oc get secret -n openshift-ingress  router-certs-default -o go-template='{{index .data "tls.crt"}}' | base64 -d | sudo tee /etc/pki/ca-trust/source/anchors/${HOST}.crt  > /dev/null
 # docker login -u $(oc whoami) -p $(oc whoami -t) $HOST
-# docker tag ace-full:12.0.2.0-ubuntu $HOST/jenkins/ace-full:12.0.2.0-ubuntu
-# docker push $HOST/jenkins/ace-full:12.0.2.0-ubuntu
-# docker run -it ace-full:12.0.2.0-ubuntu /bin/bash
+# docker tag ace-buildbar:12.0.2.0-ubuntu $HOST/jenkins/ace-buildbar:12.0.2.0-ubuntu
+# docker push $HOST/jenkins/ace-buildbar:12.0.2.0-ubuntu
+# docker run -it ace-buildbar:12.0.2.0-ubuntu /bin/bash
 # oc exec -it -n jenkins cp4i-jenkins-ace-43-g896j-ft090-n2327 -c buildbar -- /bin/bash
 # oc adm prune images --registry-url=$HOST --confirm
 
