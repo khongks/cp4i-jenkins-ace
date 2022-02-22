@@ -33,7 +33,7 @@ podTemplate(
             envVar(key: 'APP_NAME', value: "${appName}"),
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
         ]),
-        containerTemplate(name: 'oc-build', image: "${ocImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
+        containerTemplate(name: 'oc-deploy', image: "${ocImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
             envVar(key: 'NAMESPACE', value: "${namespace}"),
             envVar(key: 'BAR_NAME', value: "${barName}"),
             envVar(key: 'APP_NAME', value: "${appName}"),
@@ -78,8 +78,8 @@ podTemplate(
             container("buildbar") {
                 stage('build bar') {
                     sh label: '', script: '''#!/bin/bash
-                        Xvfb -ac :100 &
-                        export DISPLAY=:100
+                        Xvfb -ac :99 &
+                        export DISPLAY=:99
                         export LICENSE=accept
                         pwd
                         source /opt/ibm/ace-12/server/bin/mqsiprofile
@@ -91,14 +91,16 @@ podTemplate(
             }
         }
         stage('Upload Bar File') {
-            container("oc-build") {
+            container("oc-deploy") {
                 stage('upload bar') {
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
                         ls -lha
                         API_KEY=`oc get secret $API_KEY_NAME -n $NAMESPACE -ojson | jq -r .data.ibmAceControlApiKey | base64 -d`
+                        echo "API_KEY: $API_KEY"
                         curl -X PUT -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE > /dev/null
+                        
                         // export PAYLOAD=`curl -X GET -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE`
                         // export TOKEN=`echo $PAYLOAD | jq -r .token`}
                         // curl -k -H "x-ibm-ace-control-apikey: $API_KEY" -T $BAR_FILE.bar https://$HOST:$PORT/v1/directories/$BAR_FILE/bars/$BAR_FILE.bar
@@ -112,7 +114,7 @@ podTemplate(
         }
         // https://ace-dashboard-dash:3443/v1/directories/file?1bd395f5-7cb8-4379-921c-536ea29a7af7 
         stage('Deploy Intergration Server') {
-            container("oc-build") {
+            container("oc-deploy") {
                 stage('deploy server') {
                     sh label: '', script: '''#!/bin/bash
                         set -e
@@ -125,6 +127,7 @@ podTemplate(
                             -e "s/{{TOKEN}}/$TOKEN/g" \
                             integration-server.yaml.tmpl > integration-server.yaml
                         oc apply -f integration-server.yaml
+                        
                         // curl -k -H "x-ibm-ace-control-apikey: $API_KEY" -T $BAR_FILE.bar https://$HOST:$PORT/v1/directories/$BAR_FILE/bars/$BAR_FILE.bar
                         // wget https://raw.github.ibm.com/cpat/cp4i-generic-asset-us0-gitops/ace-v11.0.0.9/ace/basic/ace-server.yaml?token=AACAQSFUBDBDABJQTLVMP327MUOIG -O yaml.temp
                         // source /dev/stdin <<<"$(echo 'cat <<EOF >final.temp'; cat yaml.temp; echo EOF;)"
