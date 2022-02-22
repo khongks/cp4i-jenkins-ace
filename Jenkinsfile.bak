@@ -20,10 +20,6 @@ def ibmAceSecretName = "ace-dashboard-dash"
 def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163af38465e6123e3902c118d8e24e798b7b01"
 def imagePullSecret = "ibm-entitlement-key"
 
-            // envVar(key: 'BAR_NAME', value: "${barName}"),
-            // envVar(key: 'APP_NAME', value: "${appName}"),
-            // envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
-
 podTemplate(
     serviceAccount: "jenkins-jenkins-dev",
     // volumes: [ secretVolume(secretName: "${secretName}", mountPath: '/etc/ssh-key') ],
@@ -89,6 +85,7 @@ podTemplate(
                 """
             }
         }
+        // curl -X GET -k -H "x-ibm-ace-control-apikey: 6556d1d5-3303-4a2f-914d-db589cad6396" https://ace-dashboard-dash.ace.svc.cluster.local:3443/v1/directories/file
         stage('Deploy Bar File') {
             container("curl-image") {
                 sh label: '', script: '''#!/bin/bash
