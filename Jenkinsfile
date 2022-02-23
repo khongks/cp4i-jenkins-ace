@@ -99,7 +99,7 @@ podTemplate(
                         ls -lha
                         API_KEY=`oc get secret $API_KEY_NAME -n $NAMESPACE -ojson | jq -r .data.ibmAceControlApiKey | base64 -d`
                         echo "API_KEY: $API_KEY"
-                        curl -X PUT -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE > /dev/null
+                        curl -X PUT -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE -d $BAR_FILE.bar > /dev/null
                         
                         // export PAYLOAD=`curl -X GET -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE`
                         // export TOKEN=`echo $PAYLOAD | jq -r .token`}
