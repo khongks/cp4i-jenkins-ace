@@ -25,6 +25,7 @@ def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163
 def imagePullSecret = "ibm-entitlement-key"
 // artifactory
 def artifactoryHost = "artifactory-tools.itzroks-3100015379-x94hbr-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud"
+def artifactoryPort = "443"
 def artifactoryRepo = "generic-local"
 def artifactoryBasePath = "cp4i"
 
@@ -51,6 +52,7 @@ podTemplate(
             envVar(key: 'API_KEY_NAME', value: "${ibmAceSecretName}"),
             envVar(key: 'PROJECT_DIR', value: "${projectDir}"),
             envVar(key: 'ARTIFACTORY_HOST', value: "${artifactoryHost}"),
+            envVar(key: 'ARTIFACTORY_PORT', value: "${artifactoryPort}"),
             envVar(key: 'ARTIFACTORY_REPO', value: "${artifactoryRepo}"),
             envVar(key: 'ARTIFACTORY_BASE_PATH', value: "${artifactoryBasePath}"),
             envVar(key: 'ARTIFACTORY_USER', value: "admin"),
