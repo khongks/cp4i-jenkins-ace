@@ -85,7 +85,7 @@ podTemplate(
                     sh """
                         git clone $GIT_CP4I_DEVOPS_UTILS_REPO
                         git clone $GIT_REPO
-                        cp -p $CP4I_DEVOPS_UTILS_DIR/templates/integration-server.tmpl $PROJECT_DIR
+                        cp -p $CP4I_DEVOPS_UTILS_DIR/templates/integration-server.yaml.tmpl $PROJECT_DIR
                         cp -p $CP4I_DEVOPS_UTILS_DIR/scripts/*.sh $PROJECT_DIR
                         ls -la
                     """
