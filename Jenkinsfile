@@ -10,11 +10,11 @@ def gitRepo = "https://github.com/khongks/cp4i-jenkins-ace.git"
 def gitDomain = "github.com"
 // Params for Build Bar Stage
 def appName = "ExampleRestApi"
-def barName = "${appName}"
+def barName = "ExampleRestApi"
 def projectDir = "cp4i-jenkins-ace"
 def utilsDir = "cp4i-devops-utils"
 // Params for Deploy Bar Stage
-def serverName = "${appName}"
+def serverName = "ExampleRestApi"
 def namespace = "ace"
 def configuration_list = ""
 def aceDashboardHost = "ace-dashboard-dash.ace.svc.cluster.local"
