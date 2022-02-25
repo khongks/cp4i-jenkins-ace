@@ -136,6 +136,7 @@ podTemplate(
                             -e "s/{{BAR_FILE}}/$BAR_FILE/g" \
                             -e "s/{{CONFIGURATION_LIST}}//g" \
                             integration-server.yaml.tmpl > integration-server.yaml
+                        cat integration-server.yaml
                         oc apply -f integration-server.yaml
                         '''
                 }
