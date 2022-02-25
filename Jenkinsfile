@@ -104,7 +104,7 @@ podTemplate(
                         pwd
                         source /opt/ibm/ace-12/server/bin/mqsiprofile
                         cd $PROJECT_DIR
-                        mqsicreatebar -data . -b $BAR_NAME_${BUILD_NUMBER}.bar -a $APP_NAME -cleanBuild -trace -configuration . 
+                        mqsicreatebar -data . -b "$BAR_NAME_${BUILD_NUMBER}.bar" -a $APP_NAME -cleanBuild -trace -configuration . 
                         ls -lha
                         '''
                 }
@@ -117,8 +117,8 @@ podTemplate(
                         set -e
                         cd $PROJECT_DIR
                         ls -lha
-                        echo "Calling upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} ${BAR_NAME}_${BUILD_NUMBER}.bar ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}"
-                        ./upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} ${BAR_NAME}_${BUILD_NUMBER}.bar ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}
+                        echo "Calling upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} "${BAR_NAME}_${BUILD_NUMBER}.bar" ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}"
+                        ./upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} "${BAR_NAME}_${BUILD_NUMBER}.bar" ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}
                         '''
                 }
             }
@@ -130,7 +130,7 @@ podTemplate(
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
-                        BAR_FILE=$BAR_NAME_${BUILD_NUMBER}.bar
+                        BAR_FILE="$BAR_NAME_${BUILD_NUMBER}.bar"
                         cat integration-server.yaml.tmpl
                         sed -e "s/{{NAME}}/$APP_NAME/g" \
                             -e "s/{{ARTIFACTORY_HOST}}/$ARTIFACTORY_HOST/g" \
