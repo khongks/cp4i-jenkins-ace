@@ -131,7 +131,7 @@ podTemplate(
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
-                        BAR_FILE="$BAR_NAME_${BUILD_NUMBER}.bar"
+                        BAR_FILE="${BAR_NAME}_${BUILD_NUMBER}.bar"
                         cat integration-server.yaml.tmpl
                         sed -e "s/{{NAME}}/$APP_NAME/g" \
                             -e "s/{{ARTIFACTORY_HOST}}/$ARTIFACTORY_HOST/g" \
