@@ -83,7 +83,7 @@ podTemplate(
     node(POD_LABEL) {
         stage('Git Checkout') {
             container("jnlp") {
-                stage('copy ssh key to home directory') {
+                //stage('copy ssh key to home directory') {
                     sh """
                         git clone $GIT_CP4I_DEVOPS_UTILS_REPO
                         git clone $GIT_REPO
@@ -91,7 +91,7 @@ podTemplate(
                         cp -p $CP4I_DEVOPS_UTILS_DIR/scripts/*.sh $PROJECT_DIR
                         ls -la
                     """
-                }
+                //}
             }
         }
         stage('Build Bar File') {
