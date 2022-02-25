@@ -87,6 +87,7 @@ podTemplate(
                         cp -p $CP4I_DEVOPS_UTILS_DIR/scripts/*.sh /usr/local/bin
                         git clone $GIT_REPO
                         cp -p $CP4I_DEVOPS_UTILS_DIR/templates/integration-server.tmpl $PROJECT_DIR
+                        cp -p $CP4I_DEVOPS_UTILS_DIR/scripts/*.sh $PROJECT_DIR
                         ls -la
                     """
                 }
@@ -116,7 +117,7 @@ podTemplate(
                         cd $PROJECT_DIR
                         ls -lha
                         echo "Calling upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} ${BAR_NAME}.bar ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}"
-                        upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} ${BAR_NAME}.bar ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}
+                        ./upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} ${BAR_NAME}.bar ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}
                         '''
                 }
             }
