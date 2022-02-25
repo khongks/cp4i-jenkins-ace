@@ -104,7 +104,8 @@ podTemplate(
                         pwd
                         source /opt/ibm/ace-12/server/bin/mqsiprofile
                         cd $PROJECT_DIR
-                        mqsicreatebar -data . -b "$BAR_NAME_${BUILD_NUMBER}.bar" -a $APP_NAME -cleanBuild -trace -configuration . 
+                        BAR_FILE="${BAR_NAME}_${BUILD_NUMBER}.bar"
+                        mqsicreatebar -data . -b $BAR_FILE -a $APP_NAME -cleanBuild -trace -configuration . 
                         ls -lha
                         '''
                 }
