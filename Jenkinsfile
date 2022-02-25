@@ -96,7 +96,7 @@ podTemplate(
         }
         stage('Build Bar File') {
             container("buildbar") {
-                stage('build bar') {
+                //stage('build bar') {
                     sh label: '', script: '''#!/bin/bash
                         Xvfb -ac :99 &
                         export DISPLAY=:99
@@ -108,12 +108,12 @@ podTemplate(
                         mqsicreatebar -data . -b $BAR_FILE -a $APP_NAME -cleanBuild -trace -configuration . 
                         ls -lha
                         '''
-                }
+                //}
             }
         }
         stage('Upload Bar File') {
             container("oc-deploy") {
-                stage('upload bar') {
+                //stage('upload bar') {
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
@@ -121,13 +121,13 @@ podTemplate(
                         echo "Calling upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} "${BAR_NAME}_${BUILD_NUMBER}.bar" ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}"
                         ./upload-barfile-to-artifactory.sh ${ARTIFACTORY_HOST} ${ARTIFACTORY_REPO} ${ARTIFACTORY_BASE_PATH} "${BAR_NAME}_${BUILD_NUMBER}.bar" ${ARTIFACTORY_USER} ${ARTIFACTORY_PASSWORD}
                         '''
-                }
+                //}
             }
         }
         // https://ace-dashboard-dash:3443/v1/directories/file?1bd395f5-7cb8-4379-921c-536ea29a7af7 
         stage('Deploy Intergration Server') {
             container("oc-deploy") {
-                stage('deploy server') {
+                //stage('deploy server') {
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
@@ -144,7 +144,7 @@ podTemplate(
                         cat integration-server.yaml
                         oc apply -f integration-server.yaml
                         '''
-                }
+                //}
             }
         }
     }
