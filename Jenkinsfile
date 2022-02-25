@@ -130,13 +130,14 @@ podTemplate(
                     sh label: '', script: '''#!/bin/bash
                         set -e
                         cd $PROJECT_DIR
+                        cat integration-server.yaml.tmpl
                         sed -e "s/{{NAME}}/$APP_NAME/g" \
                             -e "s/{{ARTIFACTORY_HOST}}/$ARTIFACTORY_HOST/g" \
                             -e "s/{{ARTIFACTORY_PORT}}/$ARTIFACTORY_PORT/g" \
                             -e "s/{{ARTIFACTORY_REPO}}/$ARTIFACTORY_REPO/g" \
                             -e "s/{{ARTIFACTORY_BASE_PATH}}/$ARTIFACTORY_BASE_PATH/g" \
                             -e "s/{{BAR_FILE}}/$BAR_FILE/g" \
-                            -e "s/{{CONFIGURATION_LIST}}//g" \
+                            -e "s/{{CONFIGURATION_LIST}}/$CONFIGURATION_LIST/g" \
                             integration-server.yaml.tmpl > integration-server.yaml
                         cat integration-server.yaml
                         oc apply -f integration-server.yaml
