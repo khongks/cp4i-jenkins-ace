@@ -53,8 +53,8 @@ podTemplate(
             envVar(key: 'ARTIFACTORY_HOST', value: "${artifactoryHost}"),
             envVar(key: 'ARTIFACTORY_REPO', value: "${artifactoryRepo}"),
             envVar(key: 'ARTIFACTORY_BASE_PATH', value: "${artifactoryBasePath}"),
-            envVar(key: 'ARTIFACTORY_USER', value: credentials(artifactory_user)),
-            envVar(key: 'ARTIFACTORY_PASSWORD', value: credentials(artifactory_password)),
+            envVar(key: 'ARTIFACTORY_USER', value: "admin"),
+            envVar(key: 'ARTIFACTORY_PASSWORD', value: "Passw0rd!"),
         ]),
         // containerTemplate(name: 'oc-build', image: "k3integrations/kubectl", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
         //     envVar(key: 'SERVER_NAME', value: "${serverName}"),
