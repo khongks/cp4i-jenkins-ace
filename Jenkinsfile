@@ -16,7 +16,7 @@ def utilsDir = "cp4i-devops-utils"
 // Params for Deploy Bar Stage
 def serverName = "ExampleRestApi"
 def namespace = "ace"
-def configuration_list = ""
+def configurationList = ""
 def aceDashboardHost = "ace-dashboard-dash.ace.svc.cluster.local"
 def port = "3443"
 // oc get secret -n ace ace-dashboard-dash -ojson | jq -r .data.ibmAceControlApiKey | base64 -d
