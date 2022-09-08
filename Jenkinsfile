@@ -25,18 +25,23 @@ def port = "3443"
 def ibmAceSecretName = "ace-dashboard-dash"
 def imageName = "icr.io/appc-dev/ace-server@sha256:c58fc5a0975314e6a8e72f2780163af38465e6123e3902c118d8e24e798b7b01"
 // def imagePullSecret = "ibm-entitlement-key"
+def aceVersion = "12.0.5.0-r3"
+def aceLicense = "L-APEH-CCHL5W"
+def replicas = "1"
 
 // Artifactory configurations
 def artifactoryHost = "artifactory-tools.itzroks-3100015379-x94hbr-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud"
 def artifactoryPort = "443"
 def artifactoryRepo = "generic-local"
 def artifactoryBasePath = "cp4i"
+def artifactoryUser = "admin"
+def artifactoryPassword = "Passw0rd!"
 
 // curl -X GET -k -H "x-ibm-ace-control-apikey: bb0f7e21-8e8a-40da-9b9f-66371c6c4142" https://ace-dashboard-dash.ace.svc.cluster.local:3443/v1/directories/file | jq -r token
 // curl -X GET -k -H "x-ibm-ace-control-apikey: $API_KEY" https://$HOST:$PORT/v1/directories/$BAR_FILE   
 
 podTemplate(
-    serviceAccount: "jenkins-jenkins-dev",
+    serviceAccount: "jenkins-jenkins",
     containers: [
         containerTemplate(name: 'buildbar', image: "${buildBarImage}", workingDir: "/home/jenkins", ttyEnabled: true, envVars: [
             envVar(key: 'BAR_NAME', value: "${barName}"),
@@ -56,8 +61,11 @@ podTemplate(
             envVar(key: 'ARTIFACTORY_PORT', value: "${artifactoryPort}"),
             envVar(key: 'ARTIFACTORY_REPO', value: "${artifactoryRepo}"),
             envVar(key: 'ARTIFACTORY_BASE_PATH', value: "${artifactoryBasePath}"),
-            envVar(key: 'ARTIFACTORY_USER', value: "admin"),
-            envVar(key: 'ARTIFACTORY_PASSWORD', value: "Passw0rd!"),
+            envVar(key: 'ARTIFACTORY_USER', value: "${artifactoryUser}"),
+            envVar(key: 'ARTIFACTORY_PASSWORD', value: "${artifactoryPassword}"),
+            envVar(key: 'ACE_VERSION', value: ${aceVersion}"),
+            envVar(key: 'ACE_LICENSE', value: ${aceLicense}"),
+            envVar(key: 'REPLICAS', value: ${replicas}"),
         ]),
         containerTemplate(name: 'jnlp', image: "jenkins/jnlp-slave:latest", ttyEnabled: true, workingDir: "/home/jenkins", envVars: [
             envVar(key: 'HOME', value: '/home/jenkins'),
@@ -115,12 +123,16 @@ podTemplate(
                     BAR_FILE="${BAR_NAME}_${BUILD_NUMBER}.bar"
                     cat integration-server.yaml.tmpl
                     sed -e "s/{{NAME}}/$APP_NAME/g" \
+                        -e "s/{{NAMESPACE}}/$NAMESPACE/g" \
                         -e "s/{{ARTIFACTORY_HOST}}/$ARTIFACTORY_HOST/g" \
                         -e "s/{{ARTIFACTORY_PORT}}/$ARTIFACTORY_PORT/g" \
                         -e "s/{{ARTIFACTORY_REPO}}/$ARTIFACTORY_REPO/g" \
                         -e "s/{{ARTIFACTORY_BASE_PATH}}/$ARTIFACTORY_BASE_PATH/g" \
                         -e "s/{{BAR_FILE}}/$BAR_FILE/g" \
                         -e "s/{{CONFIGURATION_LIST}}/$CONFIGURATION_LIST/g" \
+                        -e "s/{{ACE_VERSION}}/$ACE_VERSION/g" \
+                        -e "s/{{ACE_LICENSE}}/$ACE_LICENSE/g" \
+                        -e "s/{{REPLICAS}}/$REPLICAS/g" \
                         integration-server.yaml.tmpl > integration-server.yaml
                     cat integration-server.yaml
                     oc apply -f integration-server.yaml
